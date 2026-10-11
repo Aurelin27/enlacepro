@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#0d0b12" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>EnlacePro Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+    :root{
+      color-scheme:light dark;
+      --bg:#f7f6fa;--surface:#ffffff;--surface-2:#f0edf5;--surface-3:#e7e2ee;
+      --text:#18141f;--muted:#6e6878;--line:#ddd7e5;--accent:#7352c8;--accent-2:#9b76ef;
+      --accent-ink:#ffffff;--success:#207a5a;--danger:#b03f57;--shadow:0 18px 50px rgba(27,17,43,.12);
+      --preview-bg:#17121f;--preview-card:#292033;--preview-text:#fbf8ff;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--bg:#0d0b12;--surface:#16131d;--surface-2:#201b29;--surface-3:#2a2335;--text:#f7f3fb;--muted:#aaa2b5;--line:#332c3e;--accent:#a98bf1;--accent-2:#c2a8ff;--accent-ink:#171021;--success:#78d7ae;--danger:#ff9cad;--shadow:0 22px 70px rgba(0,0,0,.34)}
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-width:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+    button,input,textarea{font:inherit;color:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    h1,h2,h3,p{margin-top:0}
+    .app{min-height:100vh}
+    .shell-nav{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+    .nav-inner{width:min(1160px,calc(100% - 40px));height:68px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .nav-tabs{display:flex;align-items:center;gap:4px;background:var(--surface-2);padding:5px;border-radius:14px}
+    .nav-tab{border:0;background:transparent;color:var(--muted);padding:9px 14px;border-radius:10px;font-size:13px;font-weight:700}
+    .nav-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 10px rgba(25,18,34,.08)}
+    .nav-action{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700}
+    .nav-action svg{width:17px;height:17px}
+    .view{display:none}
+    .view.active{display:block}
+    .wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+    .hero{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(360px,.97fr);gap:70px;align-items:center;padding:78px 0 84px}
+    .hero-copy{max-width:620px}
+    .tag{display:inline-flex;align-items:center;gap:9px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.04em;background:color-mix(in srgb,var(--accent) 9%,transparent);padding:9px 12px;border-radius:100px}
+    .tag-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+    h1,h2,h3{font-family:'Manrope',sans-serif}
+    .hero h1{font-size:clamp(45px,6vw,72px);line-height:1.02;letter-spacing:-.055em;margin:24px 0 22px;max-width:700px}
+    .accent{color:var(--accent)}
+    .hero-copy>p{color:var(--muted);font-size:18px;line-height:1.75;max-width:575px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:31px}
+    .btn{border:1px solid transparent;min-height:48px;border-radius:13px;padding:0 19px;display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:800;font-size:14px;transition:background .18s,border-color .18s,transform .18s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--accent);color:var(--accent-ink)}
+    .btn-primary:hover{background:var(--accent-2)}
+    .btn-secondary{background:var(--surface);border-color:var(--line)}
+    .btn-soft{background:var(--surface-2);border-color:var(--line)}
+    .btn-danger{background:color-mix(in srgb,var(--danger) 10%,var(--surface));border-color:color-mix(in srgb,var(--danger) 35%,var(--line));color:var(--danger)}
+    .hero-notes{display:flex;gap:20px;flex-wrap:wrap;margin-top:22px;color:var(--muted);font-size:12px}
+    .hero-notes span{display:flex;gap:7px;align-items:center}
+    .hero-notes b{color:var(--success)}
+    .phone-stage{min-height:570px;position:relative;display:grid;place-items:center}
+    .orbit{position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 17%,transparent);background:radial-gradient(circle,color-mix(in srgb,var(--accent) 11%,transparent),transparent 68%)}
+    .orbit:after{content:"";position:absolute;inset:55px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 14%,transparent)}
+    .phone{position:relative;z-index:2;width:278px;padding:13px 14px 18px;border:7px solid color-mix(in srgb,var(--surface-3) 80%,#221c2a);border-radius:34px;background:#19131f;color:#fff;box-shadow:0 35px 80px rgba(20,13,31,.34);transform:rotate(2deg)}
+    .phone-speaker{width:70px;height:5px;border-radius:20px;background:#453a50;margin:1px auto 14px}
+    .avatar-demo{width:76px;height:76px;border-radius:50%;margin:0 auto 13px;display:grid;place-items:center;background:linear-gradient(145deg,#ffb7c9,#9c83f0);color:#24192f;font:800 25px 'Manrope'}
+    .phone h3{text-align:center;margin:0 0 5px;font-size:18px}.phone>p{text-align:center;font-size:11px;color:#bdb3c5;line-height:1.5;margin-bottom:18px}
+    .phone-link{height:48px;border:1px solid rgba(255,255,255,.12);background:#2c2335;border-radius:11px;margin:9px 0;padding:0 13px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700}
+    .phone-link i{font-style:normal;color:#c8b2fa}.phone-sign{text-align:center;color:#877c8e;font-size:9px;margin-top:16px}
+    .float-note{position:absolute;z-index:4;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);border-radius:12px;padding:12px 15px;font-weight:700;font-size:12px}
+    .note-one{right:0;top:120px;transform:rotate(-3deg)}.note-two{left:4px;bottom:96px;transform:rotate(3deg)}
+    .green{display:inline-block;width:8px;height:8px;border-radius:50%;background:#48c991;margin-right:7px}
+    .band{border-block:1px solid var(--line);background:var(--surface)}
+    .band-inner{min-height:92px;display:flex;justify-content:center;align-items:center;gap:clamp(22px,5vw,62px);flex-wrap:wrap;color:var(--muted);font-weight:800;font-size:14px}
+    .band-inner span{display:flex;gap:7px;align-items:center}
+    .section{padding:100px 0}
+    .section-head{max-width:680px;margin-bottom:45px}.section-head.center{text-align:center;margin-inline:auto}
+    .section-head small{color:var(--accent);font-weight:800;letter-spacing:.08em}
+    .section h2{font-size:clamp(34px,4.4vw,52px);letter-spacing:-.045em;line-height:1.12;margin:12px 0 15px}
+    .section-head p{color:var(--muted);line-height:1.7;font-size:16px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .step{position:relative;background:var(--surface);border:1px solid var(--line);padding:29px;min-height:225px;border-radius:18px}
+    .step-no{color:color-mix(in srgb,var(--accent) 35%,var(--muted));font:800 30px 'Manrope';position:absolute;right:25px;top:24px}
+    .step-icon{width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,var(--accent) 12%,var(--surface));display:grid;place-items:center;color:var(--accent)}
+    .step-icon svg{width:22px;height:22px}.step h3{margin:24px 0 9px;font-size:18px}.step p{color:var(--muted);font-size:14px;line-height:1.65;margin:0}
+    .showcase{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:48px}
+    .showcase-copy h2{font-size:clamp(32px,4vw,48px);letter-spacing:-.04em;line-height:1.12;margin-bottom:17px}.showcase-copy>p{color:var(--muted);font-size:16px;line-height:1.75}
+    .benefit-list{display:grid;gap:18px;margin-top:29px}.benefit{display:grid;grid-template-columns:38px 1fr;gap:13px}.benefit-mark{width:38px;height:38px;border-radius:11px;background:var(--surface-2);display:grid;place-items:center;color:var(--accent);font-weight:900}.benefit b{font-size:14px}.benefit p{color:var(--muted);font-size:12px;margin:4px 0 0}
+    .mini-editor{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:20px;transform:rotate(-2deg);box-shadow:var(--shadow)}
+    .mini-top{display:flex;gap:6px;margin-bottom:19px}.mini-top i{width:8px;height:8px;background:var(--line);border-radius:50%}.mini-field{height:43px;background:var(--surface);border:1px solid var(--line);border-radius:10px;margin:10px 0;display:flex;align-items:center;padding:0 13px;color:var(--muted);font-size:12px}.mini-field.wide{height:68px}.mini-controls{display:flex;gap:8px;margin-top:14px}.mini-controls span{height:35px;border-radius:9px;background:var(--accent);flex:1}.mini-controls span:last-child{background:var(--surface-3)}
+    .final-cta{margin:0 auto 90px;background:#2a2035;color:#fff;border-radius:24px;padding:55px 28px;text-align:center;position:relative;overflow:hidden}.final-cta:before{content:"";position:absolute;width:350px;height:350px;border-radius:50%;border:1px solid rgba(255,255,255,.08);right:-100px;top:-190px}.final-cta h2{font-size:clamp(31px,4vw,46px);letter-spacing:-.04em;margin-bottom:12px}.final-cta p{color:#cbbfd3;margin-bottom:25px}.final-cta .btn{background:#fff;color:#231a2e}
+    /* editor */
+    .editor-page{padding:42px 0 74px}.editor-head{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:28px}.editor-head h1{font-size:38px;letter-spacing:-.04em;margin:0 0 8px}.editor-head p{color:var(--muted);margin:0}.session-note{max-width:260px;color:var(--muted);font-size:12px;line-height:1.5;text-align:right}
+    .editor-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.72fr);gap:22px;align-items:start}
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:25px}.panel h2{font-size:20px;margin:0}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.panel-title small{color:var(--muted)}
+    .edit-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:23px}.edit-tab{border:1px solid transparent;background:var(--surface-2);color:var(--muted);font-size:12px;font-weight:800;padding:9px 13px;border-radius:10px}.edit-tab.active{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 28%,var(--line));background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+    .edit-section{display:none}.edit-section.active{display:block}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}.field input,.field textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:11px;padding:12px 13px;outline:none}.field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}.field textarea{min-height:92px;resize:vertical}.field small{color:var(--muted);font-size:11px}
+    .photo-row{display:flex;align-items:center;gap:15px;padding:16px;background:var(--surface-2);border-radius:14px}.avatar-edit{width:64px;height:64px;flex:0 0 64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#ffb7c9,#9c83f0);color:#24192f;font:800 21px 'Manrope';overflow:hidden}.avatar-edit img{width:100%;height:100%;object-fit:cover}.photo-actions{display:flex;gap:8px;flex-wrap:wrap}.file-label{position:relative;overflow:hidden}.file-label input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .link-list{display:grid;gap:11px}.link-row{display:grid;grid-template-columns:43px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface-2);border-radius:14px;padding:11px}.link-icon{width:43px;height:43px;border-radius:11px;background:var(--surface);display:grid;place-items:center;color:var(--accent);font-weight:900}.link-copy{min-width:0}.link-copy b,.link-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.link-copy b{font-size:13px}.link-copy small{font-size:11px;color:var(--muted);margin-top:3px}.link-actions{display:flex;gap:5px}.icon-btn{width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--surface);display:grid;place-items:center}.icon-btn:hover{border-color:var(--accent)}.icon-btn.danger{color:var(--danger)}
+    .link-form{margin-top:17px;padding-top:18px;border-top:1px solid var(--line);display:none}.link-form.open{display:block}.link-form h3{font-size:15px;margin-bottom:14px}.link-form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:14px}
+    .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.theme-card{border:2px solid transparent;background:var(--surface-2);border-radius:15px;padding:10px;text-align:left}.theme-card.active{border-color:var(--accent)}.theme-swatch{height:92px;border-radius:10px;margin-bottom:10px;display:grid;place-items:center}.theme-swatch span{display:block;width:55%;height:13px;border-radius:8px;background:rgba(255,255,255,.4);box-shadow:0 23px 0 rgba(255,255,255,.3)}.theme-card b{font-size:13px}.t-night{background:radial-gradient(circle at 50% -20%,#4a3262,#15101c 65%)}.t-light{background:linear-gradient(150deg,#fff2fa,#e5e8ff)}.t-ocean{background:linear-gradient(150deg,#115474,#082732)}.t-sunset{background:linear-gradient(150deg,#743f65,#da755d)}
+    .preview-sticky{position:sticky;top:91px}.preview-panel{padding:18px}.preview-label{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:800;margin:0 3px 13px}.profile-preview{min-height:510px;border-radius:25px;background:var(--preview-bg);color:var(--preview-text);padding:34px 22px 25px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.profile-avatar{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;margin:auto;background:linear-gradient(145deg,#ffb7c9,#9c83f0);color:#24192f;font:800 25px 'Manrope';overflow:hidden;border:3px solid rgba(255,255,255,.15)}.profile-avatar img{width:100%;height:100%;object-fit:cover}.profile-preview h3{font-size:21px;margin:14px 0 6px}.profile-handle{font-size:11px;opacity:.65;margin-bottom:8px}.profile-bio{font-size:12px;line-height:1.55;opacity:.76;white-space:pre-wrap;margin-bottom:20px;min-height:19px}.preview-links{display:grid;gap:10px}.preview-link{min-height:48px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.1);border-radius:11px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;text-align:left}.preview-brand{opacity:.48;font-size:9px;margin-top:24px}
+    .profile-preview.theme-light{background:linear-gradient(150deg,#fff2fa,#e5e8ff);color:#271d34}.profile-preview.theme-light .preview-link{background:rgba(255,255,255,.74);border-color:#ddd0e8}.profile-preview.theme-ocean{background:linear-gradient(150deg,#115474,#082732)}.profile-preview.theme-sunset{background:linear-gradient(150deg,#743f65,#da755d)}
+    .full-preview{min-height:calc(100vh - 68px);padding:45px 18px 70px;display:grid;place-items:start center;background:#17121f;color:#fff}.full-preview.theme-light{background:linear-gradient(150deg,#fff2fa,#e5e8ff);color:#271d34}.full-preview.theme-ocean{background:linear-gradient(150deg,#115474,#082732)}.full-preview.theme-sunset{background:linear-gradient(150deg,#743f65,#da755d)}
+    .public-wrap{width:min(440px,100%);text-align:center}.public-wrap .profile-avatar{width:96px;height:96px}.public-wrap h1{font-size:29px;margin:16px 0 5px;letter-spacing:-.03em}.public-wrap .profile-bio{font-size:14px;margin:12px auto 28px;max-width:380px}.public-wrap .preview-links{gap:13px}.public-wrap .preview-link{min-height:59px;padding:0 18px;border-radius:14px;font-size:14px}.public-wrap .preview-brand{margin-top:38px;font-size:11px}
+    .toast{position:fixed;z-index:60;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);border-radius:12px;padding:12px 16px;font-size:13px;font-weight:700;box-shadow:var(--shadow);transition:.2s}.toast.show{transform:translate(-50%,0);opacity:1}
+    .empty{padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:13px}
+    .footer-note{text-align:center;color:var(--muted);font-size:11px;padding:22px}
+    @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:62px;gap:25px}.hero-copy{text-align:center;margin:auto}.hero-actions,.hero-notes{justify-content:center}.phone-stage{min-height:550px}.showcase{grid-template-columns:1fr;gap:35px}.editor-layout{grid-template-columns:1fr}.preview-sticky{position:static}.preview-panel{max-width:430px;margin:auto}.steps{grid-template-columns:1fr 1fr}.step:last-child{grid-column:1/-1}.editor-head{align-items:start}}
+    @media(max-width:620px){.nav-inner,.wrap{width:min(100% - 28px,1160px)}.nav-inner{height:64px}.nav-tabs{gap:2px}.nav-tab{padding:8px 10px;font-size:11px}.nav-action{padding:9px}.nav-action span{display:none}.hero{padding:48px 0 58px}.hero h1{font-size:45px}.hero-copy>p{font-size:15px}.hero-actions{display:grid}.hero-actions .btn{width:100%}.phone-stage{min-height:500px;overflow:hidden}.orbit{width:390px;height:390px}.phone{width:250px}.float-note{font-size:10px}.note-one{right:0;top:88px}.note-two{left:0;bottom:62px}.section{padding:70px 0}.steps{grid-template-columns:1fr}.step:last-child{grid-column:auto}.showcase{padding:26px 21px}.final-cta{border-radius:20px;margin-bottom:60px;padding:44px 20px}.editor-page{padding-top:28px}.editor-head{display:block}.editor-head h1{font-size:31px}.session-note{text-align:left;margin-top:12px}.panel{padding:19px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.theme-grid{grid-template-columns:1fr 1fr}.photo-row{align-items:flex-start}.link-row{grid-template-columns:40px minmax(0,1fr)}.link-actions{grid-column:1/-1;justify-content:flex-end;border-top:1px solid var(--line);padding-top:9px}.profile-preview{min-height:470px}.full-preview{padding-top:36px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.toast{transition:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="shell-nav">
+    <div class="nav-inner">
+      <nav class="nav-tabs" aria-label="Navegación principal">
+        <button class="nav-tab active" data-view="home">Inicio</button>
+        <button class="nav-tab" data-view="editor">Crear página</button>
+        <button class="nav-tab" data-view="public">Vista pública</button>
+      </nav>
+      <button class="nav-action" data-view="editor" aria-label="Editar perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Editar perfil</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="home" class="view active">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <div class="tag"><span class="tag-dot"></span> Tu espacio digital, a tu manera</div>
+        <h1>Todo lo que compartes. <span class="accent">Un solo enlace.</span></h1>
+        <p>Reúne tus redes, videos, proyectos y contactos en una página clara, personal y lista para mostrar al mundo.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-view="editor">Crear mi página <span>→</span></button>
+          <button class="btn btn-secondary" data-view="public">Ver perfil de ejemplo</button>
+        </div>
+        <div class="hero-notes"><span><b>✓</b> Fácil de personalizar</span><span><b>✓</b> Se ve bien en cualquier pantalla</span></div>
+      </div>
+      <div class="phone-stage" aria-label="Ejemplo de una página de enlaces">
+        <div class="orbit"></div>
+        <div class="float-note note-one"><span class="green"></span>Tu página está lista</div>
+        <div class="phone">
+          <div class="phone-speaker"></div><div class="avatar-demo">MC</div><h3>María Creativa</h3><p>Ideas, videos y proyectos.<br>Encuentra todo aquí.</p>
+          <div class="phone-link"><span>Mi Instagram</span><i>↗</i></div><div class="phone-link"><span>Canal de YouTube</span><i>↗</i></div><div class="phone-link"><span>Mis proyectos</span><i>↗</i></div><div class="phone-link"><span>Contáctame</span><i>↗</i></div><div class="phone-sign">hecho con EnlacePro</div>
+        </div>
+        <div class="float-note note-two">enlace.pro/mariacreativa</div>
+      </div>
+    </section>
+    <div class="band"><div class="wrap band-inner"><span>◎ Instagram</span><span>♪ TikTok</span><span>▶ YouTube</span><span>f Facebook</span><span>✦ Tus proyectos</span></div></div>
+    <section class="section wrap">
+      <div class="section-head center"><small>EMPIEZA EN MINUTOS</small><h2>Tu página, paso a paso</h2><p>Organiza tu presencia digital sin complicaciones y comprueba cada cambio antes de mostrarlo.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-no">01</span><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><h3>Personaliza tu perfil</h3><p>Agrega tu foto, nombre, dirección personal y una breve presentación.</p></article>
+        <article class="step"><span class="step-no">02</span><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/></svg></div><h3>Reúne tus enlaces</h3><p>Añade, ordena y elimina botones mientras ves el resultado en vivo.</p></article>
+        <article class="step"><span class="step-no">03</span><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg></div><h3>Muestra tu página</h3><p>Abre la vista pública y úsala para enseñar cómo quedará tu perfil.</p></article>
+      </div>
+    </section>
+    <section class="section wrap" style="padding-top:0">
+      <div class="showcase">
+        <div class="showcase-copy"><h2>Tu identidad primero. El resto, a un clic.</h2><p>Cambia textos, enlaces y colores desde un editor sencillo. La vista previa responde al instante para que ajustes cada detalle.</p><div class="benefit-list"><div class="benefit"><div class="benefit-mark">✓</div><div><b>Edición inmediata</b><p>Observa el resultado mientras escribes.</p></div></div><div class="benefit"><div class="benefit-mark">↕</div><div><b>Orden flexible</b><p>Mueve tus botones hasta que todo tenga sentido.</p></div></div><div class="benefit"><div class="benefit-mark">◐</div><div><b>Cuatro estilos</b><p>Elige la apariencia que mejor te represente.</p></div></div></div></div>
+        <div class="mini-editor" aria-hidden="true"><div class="mini-top"><i></i><i></i><i></i></div><div class="mini-field">Nombre público</div><div class="mini-field wide">Una breve presentación...</div><div class="mini-field">Título del enlace</div><div class="mini-field">Dirección web</div><div class="mini-controls"><span></span><span></span></div></div>
+      </div>
+    </section>
+    <section class="final-cta wrap"><h2>¿Listo para crear tu espacio?</h2><p>Entra al editor, cambia el contenido y abre tu perfil completo.</p><button class="btn" data-view="editor">Empezar ahora →</button></section>
+  </main>
+
+  <main id="editor" class="view editor-page">
+    <div class="wrap">
+      <div class="editor-head"><div><h1>Crea tu página</h1><p>Edita cada detalle y observa el resultado al instante.</p></div><div class="session-note">Tus cambios permanecen mientras mantengas esta pestaña abierta.</div></div>
+      <div class="editor-layout">
+        <section class="panel">
+          <div class="edit-tabs" role="tablist" aria-label="Secciones del editor"><button class="edit-tab active" data-tab="profile">Perfil</button><button class="edit-tab" data-tab="links">Enlaces</button><button class="edit-tab" data-tab="style">Estilo</button></div>
+          <div id="tab-profile" class="edit-section active">
+            <div class="panel-title"><div><h2>Tu perfil</h2><small>La información que verán tus visitantes.</small></div></div>
+            <div class="form-grid">
+              <div class="field full"><label>Foto</label><div class="photo-row"><div class="avatar-edit" id="avatarEdit">MC</div><div class="photo-actions"><label class="btn btn-soft file-label">Elegir imagen<input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp" /></label><button id="removePhoto" class="btn btn-secondary" type="button">Quitar</button></div></div></div>
+              <div class="field"><label for="nameInput">Nombre público</label><input id="nameInput" maxlength="40" value="María Creativa" /><small><span id="nameCount">14</span>/40 caracteres</small></div>
+              <div class="field"><label for="handleInput">Nombre del enlace</label><input id="handleInput" maxlength="24" value="mariacreativa" inputmode="url" /><small>enlace.pro/<span id="handleHint">mariacreativa</span></small></div>
+              <div class="field full"><label for="bioInput">Biografía</label><textarea id="bioInput" maxlength="140">Ideas, videos y proyectos. Encuentra todo aquí.</textarea><small><span id="bioCount">48</span>/140 caracteres</small></div>
+            </div>
+            <div style="margin-top:20px;display:flex;justify-content:flex-end"><button class="btn btn-primary next-tab" data-next="links">Continuar a enlaces →</button></div>
+          </div>
+          <div id="tab-links" class="edit-section">
+            <div class="panel-title"><div><h2>Tus enlaces</h2><small>Añade botones y decide en qué orden aparecen.</small></div><button id="openLinkForm" class="btn btn-primary">+ Añadir</button></div>
+            <div id="linkList" class="link-list"></div>
+            <form id="linkForm" class="link-form">
+              <h3 id="linkFormTitle">Nuevo enlace</h3>
+              <div class="form-grid"><div class="field"><label for="linkTitle">Título</label><input id="linkTitle" maxlength="45" placeholder="Ej. Mi Instagram" required /></div><div class="field"><label for="linkUrl">Dirección web</label><input id="linkUrl" type="url" placeholder="https://..." /></div></div>
+              <div class="link-form-actions"><button id="cancelLink" class="btn btn-secondary" type="button">Cancelar</button><button class="btn btn-primary" type="submit">Guardar enlace</button></div>
+            </form>
+            <div style="margin-top:20px;display:flex;justify-content:flex-end"><button class="btn btn-primary next-tab" data-next="style">Continuar al estilo →</button></div>
+          </div>
+          <div id="tab-style" class="edit-section">
+            <div class="panel-title"><div><h2>Elige tu estilo</h2><small>Puedes cambiarlo cuantas veces quieras.</small></div></div>
+            <div class="theme-grid">
+              <button class="theme-card active" data-theme="night"><span class="theme-swatch t-night"><span></span></span><b>Noche</b></button>
+              <button class="theme-card" data-theme="light"><span class="theme-swatch t-light"><span></span></span><b>Claro</b></button>
+              <button class="theme-card" data-theme="ocean"><span class="theme-swatch t-ocean"><span></span></span><b>Océano</b></button>
+              <button class="theme-card" data-theme="sunset"><span class="theme-swatch t-sunset"><span></span></span><b>Atardecer</b></button>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:22px"><button class="btn btn-primary" data-view="public">Abrir vista pública →</button></div>
+          </div>
+        </section>
+        <aside class="preview-sticky"><div class="panel preview-panel"><div class="preview-label"><span>VISTA PREVIA</span><span id="previewPath">/mariacreativa</span></div><div id="miniPreview" class="profile-preview"><div class="profile-avatar" id="miniAvatar">MC</div><h3 id="miniName">María Creativa</h3><div class="profile-handle" id="miniHandle">@mariacreativa</div><div class="profile-bio" id="miniBio">Ideas, videos y proyectos. Encuentra todo aquí.</div><div id="miniLinks" class="preview-links"></div><div class="preview-brand">hecho con EnlacePro</div></div></div></aside>
+      </div>
+    </div>
+  </main>
+
+  <main id="public" class="view">
+    <section id="fullPreview" class="full-preview">
+      <div class="public-wrap"><div class="profile-avatar" id="publicAvatar">MC</div><h1 id="publicName">María Creativa</h1><div class="profile-handle" id="publicHandle">@mariacreativa</div><div class="profile-bio" id="publicBio">Ideas, videos y proyectos. Encuentra todo aquí.</div><div id="publicLinks" class="preview-links"></div><div class="preview-brand">hecho con EnlacePro</div></div>
+    </section>
+  </main>
+  <div class="footer-note">EnlacePro · Crea, organiza y comparte.</div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  'use strict';
+  var state={
+    name:'María Creativa',handle:'mariacreativa',bio:'Ideas, videos y proyectos. Encuentra todo aquí.',photo:'',theme:'night',
+    links:[
+      {title:'Mi Instagram',url:'https://instagram.com'},
+      {title:'Canal de YouTube',url:'https://youtube.com'},
+      {title:'Mis proyectos',url:''},
+      {title:'Contáctame',url:''}
+    ]
+  };
+  var editingIndex=-1;
+  function $(id){return document.getElementById(id)}
+  function initials(){var words=(state.name||'Tu Perfil').trim().split(/\s+/).filter(Boolean);return ((words[0]||'T')[0]+(words[1]||'P')[0]).toUpperCase()}
+  function cleanHandle(value){return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9._-]/g,'').slice(0,24)}
+  function avatarMarkup(el){el.innerHTML='';if(state.photo){var img=document.createElement('img');img.src=state.photo;img.alt='Foto de '+state.name;el.appendChild(img)}else{el.textContent=initials()}}
+  function safeUrl(url){if(!url)return '';try{var u=new URL(url);return (u.protocol==='http:'||u.protocol==='https:')?u.href:''}catch(e){return ''}}
+  function makeLink(item,interactive){var a=document.createElement(interactive?'a':'div');a.className='preview-link';var text=document.createElement('span');text.textContent=item.title;var arrow=document.createElement('span');arrow.textContent='↗';a.appendChild(text);a.appendChild(arrow);if(interactive){var url=safeUrl(item.url);a.href=url||'#';if(url){a.target='_blank';a.rel='noopener noreferrer'}else{a.addEventListener('click',function(e){e.preventDefault();toast('Añade una dirección web desde el editor.')})}}return a}
+  function renderPreview(){
+    $('miniName').textContent=state.name||'Tu nombre';$('publicName').textContent=state.name||'Tu nombre';
+    $('miniHandle').textContent='@'+(state.handle||'tunombre');$('publicHandle').textContent='@'+(state.handle||'tunombre');$('previewPath').textContent='/'+(state.handle||'tunombre');
+    $('miniBio').textContent=state.bio||'Tu biografía aparecerá aquí.';$('publicBio').textContent=state.bio||'Tu biografía aparecerá aquí.';
+    avatarMarkup($('miniAvatar'));avatarMarkup($('publicAvatar'));avatarMarkup($('avatarEdit'));
+    ['miniPreview','fullPreview'].forEach(function(id){var el=$(id);el.className=id==='miniPreview'?'profile-preview':'full-preview';if(state.theme!=='night')el.classList.add('theme-'+state.theme)});
+    $('miniLinks').innerHTML='';$('publicLinks').innerHTML='';
+    if(!state.links.length){var e1=document.createElement('div');e1.className='empty';e1.textContent='Tus enlaces aparecerán aquí.';$('miniLinks').appendChild(e1.cloneNode(true));$('publicLinks').appendChild(e1)}
+    state.links.forEach(function(item){$('miniLinks').appendChild(makeLink(item,false));$('publicLinks').appendChild(makeLink(item,true))});
+  }
+  function renderLinkList(){
+    var list=$('linkList');list.innerHTML='';
+    if(!state.links.length){var empty=document.createElement('div');empty.className='empty';empty.textContent='Todavía no has añadido enlaces.';list.appendChild(empty);return}
+    state.links.forEach(function(item,index){var row=document.createElement('div');row.className='link-row';
+      var icon=document.createElement('div');icon.className='link-icon';icon.textContent='↗';
+      var copy=document.createElement('div');copy.className='link-copy';var b=document.createElement('b');b.textContent=item.title;var small=document.createElement('small');small.textContent=item.url||'Dirección pendiente';copy.appendChild(b);copy.appendChild(small);
+      var actions=document.createElement('div');actions.className='link-actions';
+      [['↑','Subir',function(){moveLink(index,-1)}],['↓','Bajar',function(){moveLink(index,1)}],['✎','Editar',function(){editLink(index)}],['×','Eliminar',function(){removeLink(index)}]].forEach(function(def,j){var btn=document.createElement('button');btn.type='button';btn.className='icon-btn'+(j===3?' danger':'');btn.textContent=def[0];btn.title=def[1];btn.setAttribute('aria-label',def[1]+' '+item.title);btn.addEventListener('click',def[2]);actions.appendChild(btn)});
+      row.appendChild(icon);row.appendChild(copy);row.appendChild(actions);list.appendChild(row)
+    })
+  }
+  function moveLink(index,delta){var next=index+delta;if(next<0||next>=state.links.length)return;var temp=state.links[index];state.links[index]=state.links[next];state.links[next]=temp;renderLinkList();renderPreview();toast('Orden actualizado')}
+  function removeLink(index){state.links.splice(index,1);renderLinkList();renderPreview();toast('Enlace eliminado')}
+  function editLink(index){editingIndex=index;$('linkFormTitle').textContent='Editar enlace';$('linkTitle').value=state.links[index].title;$('linkUrl').value=state.links[index].url;$('linkForm').classList.add('open');$('linkTitle').focus()}
+  function resetLinkForm(){$('linkForm').reset();$('linkForm').classList.remove('open');$('linkFormTitle').textContent='Nuevo enlace';editingIndex=-1}
+  function toast(message){var t=$('toast');t.textContent=message;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(function(){t.classList.remove('show')},1800)}
+  function showView(name){document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id===name)});document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-view')===name)});window.scrollTo(0,0);if(name==='public')renderPreview()}
+  function showTab(name){document.querySelectorAll('.edit-tab').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===name)});document.querySelectorAll('.edit-section').forEach(function(s){s.classList.toggle('active',s.id==='tab-'+name)})}
+  document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.getAttribute('data-view'))})});
+  document.querySelectorAll('.edit-tab').forEach(function(b){b.addEventListener('click',function(){showTab(b.getAttribute('data-tab'))})});
+  document.querySelectorAll('.next-tab').forEach(function(b){b.addEventListener('click',function(){showTab(b.getAttribute('data-next'));window.scrollTo({top:120,behavior:'smooth'})})});
+  $('nameInput').addEventListener('input',function(e){state.name=e.target.value;$('nameCount').textContent=e.target.value.length;renderPreview()});
+  $('handleInput').addEventListener('input',function(e){var cleaned=cleanHandle(e.target.value);e.target.value=cleaned;state.handle=cleaned;$('handleHint').textContent=cleaned||'tunombre';renderPreview()});
+  $('bioInput').addEventListener('input',function(e){state.bio=e.target.value;$('bioCount').textContent=e.target.value.length;renderPreview()});
+  $('photoInput').addEventListener('change',function(e){var file=e.target.files&&e.target.files[0];if(!file)return;if(file.size>5*1024*1024){toast('Elige una imagen de menos de 5 MB.');e.target.value='';return}var reader=new FileReader();reader.onload=function(){state.photo=reader.result;renderPreview();toast('Foto actualizada')};reader.readAsDataURL(file)});
+  $('removePhoto').addEventListener('click',function(){state.photo='';$('photoInput').value='';renderPreview();toast('Foto eliminada')});
+  $('openLinkForm').addEventListener('click',function(){resetLinkForm();$('linkForm').classList.add('open');$('linkTitle').focus()});
+  $('cancelLink').addEventListener('click',resetLinkForm);
+  $('linkForm').addEventListener('submit',function(e){e.preventDefault();var title=$('linkTitle').value.trim();var url=$('linkUrl').value.trim();if(!title){toast('Escribe un título.');return}if(url&&!safeUrl(url)){toast('Usa una dirección que empiece con http:// o https://');return}var item={title:title,url:url};if(editingIndex>=0)state.links[editingIndex]=item;else state.links.push(item);resetLinkForm();renderLinkList();renderPreview();toast('Enlace guardado')});
+  document.querySelectorAll('.theme-card').forEach(function(b){b.addEventListener('click',function(){state.theme=b.getAttribute('data-theme');document.querySelectorAll('.theme-card').forEach(function(x){x.classList.toggle('active',x===b)});renderPreview();toast('Estilo aplicado')})});
+  renderLinkList();renderPreview();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
