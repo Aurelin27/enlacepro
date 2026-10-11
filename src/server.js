@@ -17,6 +17,7 @@ if (!process.env.SESSION_SECRET) {
 }
 
 const app = express();
+app.set('trust proxy', 1); // Detrás de un proxy (Vercel/Render): necesario para cookies seguras.
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -77,9 +78,15 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-initSchema()
-  .then(() => app.listen(PORT, () => console.log(`EnlacePro listo en http://localhost:${PORT}`)))
-  .catch((e) => {
-    console.error('No se pudo iniciar la base de datos:', e.message);
-    process.exit(1);
-  });
+// La inicialización de la BD corre al importar el módulo (también en serverless).
+// Solo se escucha el puerto cuando se ejecuta directamente con `node src/server.js`.
+const ready = initSchema().catch((e) => {
+  console.error('No se pudo iniciar la base de datos:', e.message);
+});
+
+if (require.main === module) {
+  ready.then(() => app.listen(PORT, () => console.log(`EnlacePro listo en http://localhost:${PORT}`)));
+}
+
+module.exports = app;
+module.exports.ready = ready;
