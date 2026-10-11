@@ -1,0 +1,48 @@
+<%- include('partials/head') %>
+<div class="wrap dashboard">
+  <div class="dash-head"><div><h1>🤝 Gana puntos con los referidos</h1><p>Comparte tu código y gana <strong><%= pointsPerReferral %> puntos</strong> por cada referido que active un plan con pago confirmado.</p></div></div>
+
+  <div class="stat-cards">
+    <div class="stat-card"><span class="stat-num"><%= user.points %></span><span class="stat-label">Tus puntos</span></div>
+    <div class="stat-card"><span class="stat-num"><%= referrals.length %></span><span class="stat-label">Referidos totales</span></div>
+  </div>
+
+  <% if (user.referral_code) { %>
+    <div class="dash-card">
+      <h2>Tu código de referido</h2>
+      <p class="dash-subtitle">Comparte este enlace. Cuando alguien cree su cuenta con tu código y su pago sea confirmado, ganas <%= pointsPerReferral %> puntos.</p>
+      <div class="field"><label>Tu enlace de referido</label><input type="text" readonly value="<%= referralLink %>" onclick="this.select()"/></div>
+      <p class="dash-subtitle">Tu código: <strong><%= user.referral_code %></strong></p>
+    </div>
+  <% } else if (request && request.status === 'pending') { %>
+    <div class="dash-card"><h2>Solicitud en revisión</h2><p class="dash-subtitle">Pediste tu código de referido el <%= new Date(request.created_at).toLocaleDateString('es-419') %>. Te avisaremos cuando sea aprobado.</p></div>
+  <% } else { %>
+    <div class="dash-card">
+      <h2>Solicita tu código de referido</h2>
+      <p class="dash-subtitle">Pídelo aquí y el administrador te asignará tu código único para compartir.</p>
+      <form action="/referidos/solicitar" method="post"><button class="btn btn-primary" type="submit">Solicitar código de referido →</button></form>
+    </div>
+  <% } %>
+
+  <div class="dash-card">
+    <h2>Mis referidos</h2>
+    <% if (!referrals.length) { %>
+      <p class="dash-subtitle">Aún no tienes referidos. ¡Comparte tu código para empezar a ganar puntos!</p>
+    <% } else { %>
+      <table class="table">
+        <thead><tr><th>Referido</th><th>Fecha</th><th>Puntos</th></tr></thead>
+        <tbody>
+          <% referrals.forEach(function(r){ %>
+            <tr>
+              <td><%= r.referred_name || r.referred_email %></td>
+              <td><%= new Date(r.created_at).toLocaleDateString('es-419') %></td>
+              <td><%= r.points_awarded ? '✓ ' + pointsPerReferral : 'pendiente de pago' %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <p class="dash-subtitle">Los puntos se acreditan solo cuando el pago del referido es confirmado.<% if (stripeTestMode) { %> Estás en modo de prueba: las activaciones son simuladas.<% } %></p>
+    <% } %>
+  </div>
+</div>
+<%- include('partials/footer') %>

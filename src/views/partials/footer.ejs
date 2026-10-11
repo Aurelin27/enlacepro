@@ -1,0 +1,16 @@
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-content">
+    <span class="brand small"><span class="brand-icon">↗</span> enlace<span class="accent">pro</span></span>
+    <span>Tu presencia digital, en un solo lugar.</span>
+  </div>
+</footer>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

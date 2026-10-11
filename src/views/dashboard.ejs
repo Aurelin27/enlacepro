@@ -1,0 +1,28 @@
+<%- include('partials/head') %>
+<div class="wrap dashboard">
+  <div class="dash-head">
+    <div>
+      <h1>Hola, <%= user.name || user.slug %> 👋</h1>
+      <p>Tu página: <a href="/<%= user.slug %>" target="_blank" rel="noopener">/<%= user.slug %> ↗</a></p>
+    </div>
+    <div class="plan-badge <%= user.plan %>">
+      <%= user.role === 'admin' ? 'Administrador' : (user.plan === 'none' ? 'Sin plan' : (user.plan === 'basico' ? 'Básico' : 'VIP')) %>
+    </div>
+  </div>
+
+  <div class="stat-cards">
+    <div class="stat-card"><span class="stat-num"><%= linksCount %></span><span class="stat-label">Enlaces</span></div>
+    <div class="stat-card"><span class="stat-num"><%= user.points %></span><span class="stat-label">Puntos de referidos</span></div>
+    <div class="stat-card"><span class="stat-num"><%= refCount %></span><span class="stat-label">Referidos</span></div>
+  </div>
+
+  <div class="dash-grid">
+    <a class="dash-card link-card" href="/dashboard/perfil"><h2>✦ Editar perfil</h2><p>Foto, nombre, bio y nombre de enlace.</p></a>
+    <a class="dash-card link-card" href="/dashboard/enlaces"><h2>↗ Mis enlaces</h2><p>Agrega, edita y ordena tus enlaces.</p></a>
+    <a class="dash-card link-card" href="/dashboard/estilo"><h2>◉ Estilo visual</h2><p>Elige cómo se ve tu página pública.</p></a>
+    <a class="dash-card link-card" href="/referidos"><h2>🤝 Gana puntos con los referidos</h2><p>Solicita tu código y comparte tu enlace.</p></a>
+    <a class="dash-card link-card" href="/planes"><h2>★ Mi plan</h2><p><%= user.plan === 'none' ? 'Elige un plan para desbloquear más.' : 'Gestiona tu suscripción.' %></p></a>
+    <a class="dash-card link-card" href="/<%= user.slug %>" target="_blank" rel="noopener"><h2>👁 Ver mi página</h2><p>Así la ve el mundo.</p></a>
+  </div>
+</div>
+<%- include('partials/footer') %>

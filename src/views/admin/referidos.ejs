@@ -1,0 +1,58 @@
+<%- include('../partials/head') %>
+<div class="wrap dashboard">
+  <div class="dash-head"><div><h1>Referidos</h1><p>Puntos por referido actual: <strong><%= pointsPerReferral %></strong> (se cambia en Ajustes).</p></div></div>
+
+  <div class="dash-card">
+    <h2>Solicitudes pendientes (<%= requests.length %>)</h2>
+    <% if (!requests.length) { %><p class="dash-subtitle">No hay solicitudes pendientes.</p><% } %>
+    <% requests.forEach(function(r){ %>
+      <div class="link-row">
+        <div class="link-row-main">
+          <strong><%= r.name || r.email %></strong>
+          <span class="muted-link"><%= r.email %> · solicitada el <%= new Date(r.created_at).toLocaleDateString('es-419') %></span>
+        </div>
+        <div class="link-row-actions">
+          <form action="/admin/referidos/solicitudes/<%= r.id %>/aprobar" method="post" class="inline-form">
+            <input name="code" type="text" maxlength="24" placeholder="Código (vacío = auto)" class="code-input"/>
+            <button class="btn btn-small btn-primary" type="submit">Aprobar y asignar</button>
+          </form>
+          <form action="/admin/referidos/solicitudes/<%= r.id %>/rechazar" method="post" class="inline-form">
+            <button class="btn btn-small btn-danger" type="submit">Rechazar</button>
+          </form>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <div class="dash-card">
+    <h2>Puntos por usuario</h2>
+    <table class="table">
+      <thead><tr><th>Usuario</th><th>Correo</th><th>Código</th><th>Puntos</th></tr></thead>
+      <tbody>
+        <% withPoints.forEach(function(u){ %>
+          <tr><td><%= u.name || '—' %></td><td><%= u.email %></td><td><%= u.referral_code || '—' %></td><td><strong><%= u.points %></strong></td></tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dash-card">
+    <h2>Historial de referidos</h2>
+    <table class="table">
+      <thead><tr><th>Referente</th><th>Referido</th><th>Código</th><th>Puntos</th><th>Fecha</th></tr></thead>
+      <tbody>
+        <% history.forEach(function(h){ %>
+          <tr>
+            <td><%= h.referrer_name || '—' %></td>
+            <td><%= h.referred_email %></td>
+            <td><%= h.code %></td>
+            <td><%= h.points_awarded ? '✓ acreditados' : 'pendiente de pago' %></td>
+            <td><%= new Date(h.created_at).toLocaleDateString('es-419') %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <div class="savebar"><a class="btn btn-ghost" href="/admin">Volver al panel</a></div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

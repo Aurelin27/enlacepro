@@ -1,0 +1,10 @@
+<%- include('partials/head') %>
+<div class="auth-layout">
+  <div class="auth-card" style="text-align:center">
+    <h1>¡Listo! 🎉</h1>
+    <p>Tu pago se está procesando. En unos segundos tu plan quedará activo.</p>
+    <% if (stripeTestMode) { %><p class="notice">Estás en modo de prueba: no se hizo ningún cargo real.</p><% } %>
+    <a class="btn btn-primary" href="/dashboard" style="margin-top:20px">Ir a mi panel →</a>
+  </div>
+</div>
+<%- include('partials/footer') %>

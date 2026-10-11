@@ -1,0 +1,18 @@
+<%- include('../partials/head') %>
+<div class="wrap dashboard">
+  <div class="dash-head"><div><h1>Ajustes</h1><p>Configuración de la aplicación.</p></div></div>
+  <div class="dash-card">
+    <form class="dash-form" action="/admin/ajustes" method="post">
+      <div class="field">
+        <label for="points_per_referral">Puntos por referido</label>
+        <input id="points_per_referral" name="points_per_referral" type="number" min="0" value="<%= pointsPerReferral %>"/>
+        <small>Puntos que gana un referente cuando el pago de su referido es confirmado por Stripe.</small>
+      </div>
+      <div class="savebar">
+        <button class="btn btn-primary" type="submit">Guardar</button>
+        <a class="btn btn-ghost" href="/admin">Volver al panel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include('../partials/footer') %>

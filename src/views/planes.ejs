@@ -1,0 +1,68 @@
+<%- include('partials/head') %>
+<div class="wrap dashboard">
+  <div class="section-head">
+    <span class="kicker">PRECIOS CLAROS</span>
+    <h2>Un plan para <span class="accent">cada creador</span></h2>
+    <p>Mensual o anual: el plan anual tiene <strong>25% de descuento</strong>. Cancela cuando quieras.</p>
+    <div class="billing-toggle">
+      <button type="button" class="toggle-btn active" data-interval="monthly">Mensual</button>
+      <button type="button" class="toggle-btn" data-interval="yearly">Anual <span class="save-badge">-25%</span></button>
+    </div>
+  </div>
+
+  <% if (!stripeConfigured) { %>
+    <div class="notice">Los pagos aún no están configurados (<strong>pagos no configurados</strong>). Puedes explorar los planes, pero el cobro está desactivado por ahora.</div>
+  <% } %>
+
+  <% if (user && user.subscription_status === 'active') { %>
+    <div class="dash-card current-plan">
+      <h2>Tu plan actual: <%= user.plan === 'vip' ? 'VIP' : 'Básico' %> (<%= user.billing_interval === 'yearly' ? 'anual' : 'mensual' %>)</h2>
+      <p class="dash-subtitle">Gestiona tu suscripción, cambia tu método de pago o cancela cuando quieras desde el portal seguro.</p>
+      <% if (stripeConfigured && user.stripe_customer_id) { %>
+        <form action="/billing/portal" method="post"><button class="btn btn-primary" type="submit">Gestionar mi suscripción →</button></form>
+      <% } else { %>
+        <p class="notice">Portal no disponible: pagos no configurados.</p>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="pricing">
+    <% ['basico','vip'].forEach(function(key){ var p = plans[key]; %>
+    <div class="price-card <%= key === 'vip' ? 'featured' : '' %>">
+      <% if (key === 'vip') { %><div class="recommended">MÁS COMPLETO ✦</div><% } %>
+      <span class="plan-label"><%= p.name.toUpperCase() %></span>
+      <div class="price"><span class="price-monthly">$<%= p.monthlyPrice %> <span>USD / mes</span></span><span class="price-yearly hidden">$<%= p.yearlyPrice %> <span>USD / año</span></span></div>
+      <div class="price-divider"></div>
+      <ul><% p.features.forEach(function(f){ %><li>✓ <%= f %></li><% }); %></ul>
+      <div class="price-btn-wrap">
+        <% if (!user) { %>
+          <a class="btn <%= key === 'vip' ? 'btn-primary' : 'btn-outline' %> price-btn" href="/register">Crear cuenta →</a>
+        <% } else if (stripeConfigured) { %>
+          <form action="/billing/checkout" method="post" class="checkout-form" data-plan="<%= key %>">
+            <input type="hidden" name="plan" value="<%= key %>"/>
+            <input type="hidden" name="interval" value="monthly" class="interval-input"/>
+            <button class="btn <%= key === 'vip' ? 'btn-primary' : 'btn-outline' %> price-btn" type="submit">Elegir <%= p.name %> →</button>
+          </form>
+        <% } else { %>
+          <button class="btn btn-outline price-btn" disabled>Pagos no configurados</button>
+        <% } %>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+  <p class="pricing-disclaimer">Pagos seguros con Stripe. Cancela cuando quieras desde tu panel.</p>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.toggle-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var interval = btn.dataset.interval;
+    document.querySelectorAll('.price-monthly').forEach(function(el){ el.classList.toggle('hidden', interval === 'yearly'); });
+    document.querySelectorAll('.price-yearly').forEach(function(el){ el.classList.toggle('hidden', interval !== 'yearly'); });
+    document.querySelectorAll('.interval-input').forEach(function(el){ el.value = interval; });
+  });
+});
+</script>
+<%- include('partials/footer') %>

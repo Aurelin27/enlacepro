@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title><%= (typeof title !== 'undefined' && title ? title + ' · ' : '') %>EnlacePro</title>
+<link rel="stylesheet" href="/styles.css"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#0b0b12"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="EnlacePro"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="/"><span class="brand-icon">↗</span> enlace<span class="accent">pro</span></a>
+    <nav class="navlinks">
+      <a href="/planes">Planes</a>
+      <% if (user) { %>
+        <a href="/dashboard">Mi panel</a>
+        <a href="/<%= user.slug %>" target="_blank" rel="noopener">Mi página</a>
+        <a href="/referidos">Referidos</a>
+        <% if (user.role === 'admin') { %><a href="/admin" class="admin-link">Admin</a><% } %>
+      <% } %>
+    </nav>
+    <div class="nav-actions">
+      <% if (user) { %>
+        <form action="/logout" method="post" class="inline-form"><button class="btn btn-small btn-ghost" type="submit">Salir</button></form>
+      <% } else { %>
+        <a class="nav-signin" href="/login">Iniciar sesión</a>
+        <a class="btn btn-small btn-primary" href="/register">Crear cuenta</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+<% if (stripeTestMode) { %><div class="testmode">Modo de prueba — los pagos son simulados, sin cargos reales.</div><% } %>
+<% if (flash) { %><div class="flash <%= flash.type %>"><%= flash.msg %></div><% } %>
+<main>

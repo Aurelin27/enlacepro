@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<div class="wrap dashboard">
+  <div class="dash-head"><div><h1>Editar perfil</h1><p>Así te verán en tu página pública.</p></div></div>
+  <div class="dashboard-grid">
+    <div class="dash-card">
+      <form class="dash-form" action="/dashboard/perfil" method="post">
+        <div class="field">
+          <label for="name">Nombre</label>
+          <input id="name" name="name" type="text" maxlength="80" value="<%= user.name %>"/>
+        </div>
+        <div class="field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" maxlength="280"><%= user.bio %></textarea>
+          <small>Una frase corta sobre ti (máx. 280 caracteres).</small>
+        </div>
+        <div class="field">
+          <label for="photo_url">Foto de perfil (dirección de la imagen)</label>
+          <input id="photo_url" name="photo_url" type="url" maxlength="500" value="<%= user.photo_url %>" placeholder="https://..."/>
+          <small>Pega la dirección de tu foto. Si la dejas vacía se muestra tu inicial.</small>
+        </div>
+        <div class="field">
+          <label for="slug">Nombre de tu enlace</label>
+          <div class="slug-input"><span>enlacepro.com/</span><input id="slug" name="slug" type="text" value="<%= user.slug %>" required pattern="[a-z0-9][a-z0-9-]{1,28}[a-z0-9]"/></div>
+        </div>
+        <div class="savebar"><button class="btn btn-primary" type="submit">Guardar cambios</button><a class="btn btn-ghost" href="/dashboard">Volver</a></div>
+      </form>
+    </div>
+    <div class="dash-card">
+      <h2>Vista previa</h2>
+      <div class="profile-preview">
+        <% if (user.photo_url) { %><img class="preview-photo" src="<%= user.photo_url %>" alt="Foto de perfil"/><% } else { %><div class="avatar"><%= (user.name || user.slug || 'E').charAt(0).toUpperCase() %></div><% } %>
+        <h3><%= user.name || user.slug %></h3>
+        <p><%= user.bio || 'Sin bio todavía.' %></p>
+        <div class="preview-link">/<%= user.slug %></div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>
